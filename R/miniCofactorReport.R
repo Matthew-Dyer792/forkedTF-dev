@@ -13,6 +13,9 @@
 #' @param pdfName [character] Name of the pdf to be saved.
 #' @param server [character] server localtion to be linked, either 'sg' or 'ca'.
 #' for 'Singapore' or 'Canada', respectively.
+#' @param local_db_path [character] The complete path to the SQLite
+#' implementation of TFregulomeR database available at
+#' "https://methmotif.org/API_TFregulomeR/downloads/"
 #'
 #' @param universe A set of genomic regions that prevent shuffles
 #' for occuring outside of it.
@@ -54,7 +57,8 @@ miniCofactorReport <- function(TF,
               byChrom = FALSE,
               included = 1,
               pdfName = NULL,
-              server = "sg" ) {
+              server = "ca",
+              local_db_path = NULL ) {
 
   # Setting the max number of binding partners to 10
   NumberofTop = 10
@@ -88,14 +92,14 @@ miniCofactorReport <- function(TF,
 
   if( class(TF)   == "character" ){
       # Retrieve metadata information for the query TF in a given cell type/tissue from DB
-      TF_cell_tissue_name <- dataBrowser(tf = TF, cell_tissue_name = cell, server = server)
+      TF_cell_tissue_name <- dataBrowser(tf = TF, cell_tissue_name = cell, server = server, local_db_path = local_db_path)
 
       if(is.null(TF_cell_tissue_name)){ stop("Please check the spelling of your TF or cell. This is case-sensitive.") }
 
       if( dim(TF_cell_tissue_name)[1] != 1 ){ stop("More than one record for the combination of TF and cell tissue")  }
 
       # Retrieve peak BED summit information from DB for the fetched TF
-      TF_cell_peaks <- loadPeaks(id = TF_cell_tissue_name$ID[1], includeMotifOnly = includeMotifOnly, server = server)
+      TF_cell_peaks <- loadPeaks(id = TF_cell_tissue_name$ID[1], includeMotifOnly = includeMotifOnly, server = server, local_db_path = local_db_path)
 
       # Convert peak BED to GRanges
       tf_query      <- TF_cell_peaks %>%
@@ -116,7 +120,8 @@ miniCofactorReport <- function(TF,
                                                     chromSizes = chromSizes,
                                                     byChrom = byChrom,
                                                     included = included,
-                                                    server = server)
+                                                    server = server,
+                                                    local_db_path = local_db_path)
 
       message("#################################")
       message("This might take a few minutes!!!")
@@ -130,7 +135,8 @@ miniCofactorReport <- function(TF,
                                                                                peak_id_y = enriched_cofactors[["top_cell_TFBS"]]$ID,
                                                                                motif_only_for_id_y = includeMotifOnly,
                                                                                methylation_profile_in_narrow_region = Methylation,
-                                                                               server = server) ;
+                                                                               server = server,
+                                                                               local_db_path = local_db_path) ;
         FPWMcofactorReport_ui(intersectPeakMatrix = intersectMatrix_forCofactorReport,
                               top_tf              = enriched_cofactors[["top_tf"]],
                               top_num             = NumberofTop,
@@ -146,7 +152,8 @@ miniCofactorReport <- function(TF,
                                                                                peak_id_y           = enriched_cofactors[["cell_TFBS"]]$ID,
                                                                                motif_only_for_id_y = includeMotifOnly,
                                                                                methylation_profile_in_narrow_region = Methylation,
-                                                                               server = server) ;
+                                                                               server = server,
+                                                                               local_db_path = local_db_path) ;
         FPWMcofactorReport_ui(intersectPeakMatrix = intersectMatrix_forCofactorReport,
                               top_tf              = NULL,
                               top_num             = NumberofTop,
@@ -239,7 +246,8 @@ miniCofactorReport <- function(TF,
                                                   chromSizes = chromSizes,
                                                   byChrom = byChrom,
                                                   included = included,
-                                                  server = server)
+                                                  server = server,
+                                                  local_db_path = local_db_path)
 
 
     message("#################################")
@@ -251,7 +259,8 @@ miniCofactorReport <- function(TF,
                                              peak_id_y = enriched_cofactors[["top_cell_TFBS"]]$ID,
                                              motif_only_for_id_y = includeMotifOnly,
                                              methylation_profile_in_narrow_region = Methylation,
-                                             server = server);
+                                             server = server,
+                                             local_db_path = local_db_path);
       FPWMcofactorReport_ui(intersectPeakMatrix = intersectMatrix_forCofactorReport,
                             top_tf              = enriched_cofactors[["top_tf"]],
                             top_num             = NumberofTop,
@@ -266,7 +275,8 @@ miniCofactorReport <- function(TF,
                                              peak_id_y            = enriched_cofactors[["cell_TFBS"]]$ID,
                                              motif_only_for_id_y  = includeMotifOnly,
                                              methylation_profile_in_narrow_region = Methylation,
-                                             server = server) ;
+                                             server = server,
+                                             local_db_path = local_db_path) ;
       FPWMcofactorReport_ui(intersectPeakMatrix = intersectMatrix_forCofactorReport,
                             top_tf              = NULL,
                             top_num             = NumberofTop,
@@ -329,13 +339,14 @@ miniCofactorReport <- function(TF,
                                 chromSizes = loadChromSizes("hg38"),
                                 byChrom = FALSE,
                                 included = 1,
-                                server = "sg" ) {
+                                server = "ca",
+                                local_db_path = local_db_path ) {
   # Convert 'fraction' to 'nb.overlaps' for compatibility with enrichment
   if(filterBy == "fraction"){
     filterBy <- "nb.overlaps"
   }
   # Retrieve metadata information for the query cell type/tissue (all TFs found) from DB
-  cell_TFBS <- dataBrowser(cell_tissue_name = cell, server = server)
+  cell_TFBS <- dataBrowser(cell_tissue_name = cell, server = server, local_db_path = local_db_path)
 
   # Retrieve peak BED summit information for the TF collection
   cell_catalog <- list()
@@ -344,7 +355,7 @@ miniCofactorReport <- function(TF,
     tf_name <- cell_TFBS %>% dplyr::slice(i) %>% pull("TF")
     # Fetch peaks in DB and coverto to GRanges
     cell_catalog[[ tf_name ]] <- TFregulomeR::loadPeaks(id = dplyr::slice(cell_TFBS,i) %>% dplyr::pull("ID"),
-                                                        includeMotifOnly = includeMotifOnly, server = server) %>%
+                                                        includeMotifOnly = includeMotifOnly, server = server, local_db_path = local_db_path) %>%
       dplyr::mutate(start = start - 99,
                     end   = end   + 100) %>%
       (.convertDF_to_GRanges)

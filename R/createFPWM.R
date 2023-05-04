@@ -7,9 +7,12 @@
 #' @param mainTF_MMID [character] with the name of the main TF.
 #' @param partners_MMID [character vector] with the name of the main TF.
 #' @param forkPosition [numeric] defines the postion in the matrix where the motif will be forked.
-#' @param probabilityMatrix [logical] whether the function should return a frequency matrix or probability matrix (Default FALSE). 
-#' @param scaleFrequencyCounts [logical] whether the count matrix should have equal rowSums across all the rows (Default FALSE). 
-#' @param flipMatrix [logical] whether to apply reverse complement in case the core motif is after the forkPosition (Default FALSE). 
+#' @param probabilityMatrix [logical] whether the function should return a frequency matrix or probability matrix (Default FALSE).
+#' @param scaleFrequencyCounts [logical] whether the count matrix should have equal rowSums across all the rows (Default FALSE).
+#' @param flipMatrix [logical] whether to apply reverse complement in case the core motif is after the forkPosition (Default FALSE).
+#' @param local_db_path [character] The complete path to the SQLite
+#' implementation of TFregulomeR database available at
+#' "https://methmotif.org/API_TFregulomeR/downloads/"
 #' @examples
 #' fpwm <- createFPWM(mainTF ="CEBPB", partners = c("ATF4","ATF7","JUND","CEBPD"), cell = "K562", forkPosition = 5)
 #' @return returns a FPWM class object that can be used to plot or write in transfact format.
@@ -22,16 +25,17 @@ createFPWM <- function( mainTF = NULL,
 						forkPosition = NULL,
             probabilityMatrix = FALSE,
             scaleFrequencyCounts = FALSE,
-            flipMatrix = FALSE)
+            flipMatrix = FALSE,
+						local_db_path = NULL)
 						{
-  
+
   tfnames <- FALSE
   tfIDs <- FALSE
-  
+
   # Check if inputs are compatible
   if(!is.null(mainTF) & !is.null(partners) & !is.null(cell) & !is.null(forkPosition) ) { tfnames <- TRUE }
   if(!is.null(mainTF_MMID) & !is.null(partners_MMID) & !is.null(forkPosition) ) { tfIDs <- TRUE }
-  
+
   if(tfnames & tfIDs) { stop("Incompatible input. Provide 'mainTF', 'partners' and 'cell'. !!OR!! 'mainTF_MMID' and 'partners_MMID'. ") }
 
   if(!(tfnames | tfIDs) ) { stop("Missing input.\nProvide: 'mainTF', 'partners', 'cell' and 'forkPosition' \nOR\n 'mainTF_MMID', 'partners_MMID' and 'forkPosition'") }
@@ -39,16 +43,16 @@ createFPWM <- function( mainTF = NULL,
   if( probabilityMatrix == TRUE & scaleFrequencyCounts == TRUE ) { stop("scaleFrequencyCounts only works for count matrices, disable probabilityMatrix.") }
 
   if (tfnames){
-        xTF_cell_tissue_name <- suppressMessages(dataBrowser(tf = mainTF, cell_tissue_name = cell)$ID[1]) 
-  
-        partners <- as.list(unlist(partners)) ; 
+        xTF_cell_tissue_name <- suppressMessages(dataBrowser(tf = mainTF, cell_tissue_name = cell, local_db_path = local_db_path)$ID[1])
+
+        partners <- as.list(unlist(partners)) ;
         MMpartners <- partners
-        for(i in 1:length(partners)){ suppressMessages( MMpartners[[i]] <- dataBrowser(tf = partners[[i]], cell_tissue_name = cell)$ID[1] ) }
-        
+        for(i in 1:length(partners)){ suppressMessages( MMpartners[[i]] <- dataBrowser(tf = partners[[i]], cell_tissue_name = cell, local_db_path = local_db_path)$ID[1] ) }
+
 	    if(is.null(xTF_cell_tissue_name)){ stop("Please check the spelling of your mainTF or cell. \nOr there might no be information for this TF-cell combination.") }
-	
-	    if( length(xTF_cell_tissue_name) != 1 ){ stop("More than one record for the combination of TF and cell tissue") ; } 
-  
+
+	    if( length(xTF_cell_tissue_name) != 1 ){ stop("More than one record for the combination of TF and cell tissue") ; }
+
   		if( sum(MMpartners %in% partners) ){
  			 message( paste("The following partners were not found in combination with the cell:", unlist(partners[which(MMpartners %in% partners)] ) ) )
  			 stop("\n")
@@ -56,7 +60,7 @@ createFPWM <- function( mainTF = NULL,
  	    peak_id_y_list <- MMpartners
  	    peak_id_x <- xTF_cell_tissue_name
    }
-   
+
   if (tfIDs){
       partners_MMID = as.list(unlist(partners_MMID))
       peak_id_y_list = partners_MMID ; peak_id_x = mainTF_MMID
@@ -64,7 +68,7 @@ createFPWM <- function( mainTF = NULL,
 
     if( length(peak_id_y_list) < 2) { stop("The list of partner TF should contain 2 or more elements.") }
 
-    Motif <- TFregulomeR::intersectPeakMatrix(peak_id_x = peak_id_x, motif_only_for_id_x = TRUE, peak_id_y = peak_id_y_list, motif_only_for_id_y = TRUE)
+    Motif <- TFregulomeR::intersectPeakMatrix(peak_id_x = peak_id_x, motif_only_for_id_x = TRUE, peak_id_y = peak_id_y_list, motif_only_for_id_y = TRUE, local_db_path = local_db_path)
 
     motif_length <- dim(Motif[1,1][[1]]@MethMotif_x@MMBetaScore)[2] # get number of positions in motif
 
@@ -100,7 +104,7 @@ createFPWM <- function( mainTF = NULL,
       TFregulomeDatanPeaks[i] <- y[[1]]@MethMotif_x@MMmotif@nPeaks
       TFregulomeDatanSites[i] <- y[[1]]@MethMotif_x@MMmotif@nsites
       }
-  
+
   FPWM <- new("FPWMClassObj")
   FPWM <- updateFPWMClassObj(FPWM, id = peak_id_y_list,
                                  nSites = TFregulomeDatanSites,
@@ -112,7 +116,7 @@ createFPWM <- function( mainTF = NULL,
   FPWM <- MatrixAdder( FPWM, forkPosition, probabilityMatrix)
   FPWM <- BetaAdder(FPWM, forkPosition)
   FPWM <- ConvertToFTRANSFAC(FPWM, probabilityMatrix, scaleFrequencyCounts)
-  
+
   for (i in c(1:length(FPWM@betalevel))) {
     X<-FPWM@betalevel[[i]]
     FPWM@betalevel[[i]] <- X[,(forkPosition+1):ncol(FPWM@betalevel[[i]])]
@@ -139,18 +143,18 @@ createFPWM <- function( mainTF = NULL,
   to_row_ix <- ix[jx,1] : ix[jx,2]
   FPWM_tmp@forked[to_row_ix ,2:5] <-  FPWM@forked[ from_row_ix, 2:5]
   }
-  
+
   # add colnames
    FPWM <- FPWM_tmp
    colnames(FPWM@forked) <- c("PO","A","C","G","T")
    colnames(FPWM@parentbeta) <- c("PO","number","meth")
    for( i in 1:length(FPWM@betalevel) ) { colnames(FPWM@betalevel[[i]]) <- c("PO","number","meth")  }
-   
+
 return(FPWM)
 }
 
 MatrixAdder <- function( fpwmObject, forkPosition, probabilityMatrix)
-{ 
+{
   nSites <- fpwmObject@nSites
   if(probabilityMatrix==TRUE){
     total_nSites <- sum(nSites)
@@ -178,7 +182,7 @@ BetaAdder <- function( fpwmObject, forkPosition)
 }
 
 ConvertToFTRANSFAC <- function(fpwmObject, probabilityMatrix, scaleFrequencyCounts)
-{ 
+{
   Cnumber = length(fpwmObject@matrix)
   RowNum = nrow(fpwmObject@matrix[[1]])
   forkPosition = fpwmObject@forkPosition
@@ -257,9 +261,9 @@ ModifyBetaFormat <- function(fpwmObject)
   M1[(((ncol(BS1) - 1) * 2) + 1):((ncol(BS1) - 1) * 3), 3] <- pos1
 
   fpwmObject@parentbeta <- M1
-  
+
   for (i in c(1:length(fpwmObject@betalevel))) {
-    
+
     BS2 <- as.matrix(fpwmObject@betalevel[[i]])
     BS2 <-
       cbind(c("beta score<10%", "beta score 10-90%", "beta score>90%"),
@@ -268,26 +272,26 @@ ModifyBetaFormat <- function(fpwmObject)
       BS2
     ) - 1))), BS2)
     M2 <- matrix(nrow = ((ncol(BS2) - 1) * 3), ncol = 3)
-  
-  
+
+
     pos2 <- rep(t(BS2[1, 2:ncol(BS2)]), times = 3)
     M2[, 1] <- pos2
-    
+
     pos2 <- t(BS2[2, 2:ncol(BS2)])
     M2[1:(ncol(BS2) - 1), 2] <- pos2
     pos2 <- t(BS2[3, 2:ncol(BS2)])
     M2[ncol(BS2):((ncol(BS2) - 1) * 2), 2] <- pos2
     pos2 <- t(BS2[4, 2:ncol(BS2)])
     M2[(((ncol(BS2) - 1) * 2) + 1):((ncol(BS2) - 1) * 3), 2] <- pos2
-    
+
     pos2 <- rep(t(BS2[2, 1]), times = (ncol(BS2) - 1))
     M2[1:(ncol(BS2) - 1), 3] <- pos2
     pos2 <- rep(t(BS2[3, 1]), times = (ncol(BS2) - 1))
     M2[ncol(BS2):((ncol(BS2) - 1) * 2), 3] <- pos2
     pos2 <- rep(t(BS2[4, 1]), times = (ncol(BS2) - 1))
     M2[(((ncol(BS2) - 1) * 2) + 1):((ncol(BS2) - 1) * 3), 3] <- pos2
-    
+
     fpwmObject@betalevel[[i]] <- M2}
-  
+
   return(fpwmObject)
 }

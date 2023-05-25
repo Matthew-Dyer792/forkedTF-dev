@@ -79,8 +79,6 @@ if(scaleBarplot == TRUE & Methylation == TRUE){
        databox$PO <- factor(databox$PO)
        databox$PO <- factor(databox$PO,levels(databox$PO)[order(as.numeric(levels(databox$PO)))])
 
-       legend_meth <- legend
-
        parentLogo_meth <- ggplot(data = databox,
                    aes(x = PO, y = as.numeric(as.character(number)),
                        fill = meth)) +
@@ -90,7 +88,8 @@ if(scaleBarplot == TRUE & Methylation == TRUE){
               axis.ticks.y=element_blank(), axis.ticks.x=element_blank(), axis.text.x=element_blank(),
               panel.grid.major = element_blank(), panel.grid.minor = element_blank(),panel.background = element_blank(),
               plot.margin = margin(t = 0, r = 0, b = 0, l = 5, unit = "pt"),
-              legend.position=legend_meth,
+              # legend.position=legend_meth,
+              legend.direction = "vertical",
               text = element_text(size = text_size), legend.title = element_blank(), legend.background = element_blank(),
               legend.box.background = element_rect(colour = "white"),legend.text=element_text(size=22), legend.key.size = unit(1,"line") ) +
         stat_summary(fun = sum, aes(label = stat(sum_of_pos$sum), group = PO), geom = "text",vjust = -0.5,size=geom_text_size)
@@ -110,6 +109,16 @@ if(scaleBarplot == TRUE & Methylation == TRUE){
               panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
               panel.background = element_blank(),text = element_text(size = text_size))+scale_y_continuous(limits=c(0,2),breaks=c(0,1,2))
 
+    if (is.character(legend) && legend == "below") {
+      # Using the cowplot package extract the legend
+      legend_plot <- cowplot::get_legend(parentLogo_meth +
+                                           theme (legend.justification="center",
+                                                  legend.box.just = "bottom"))
+      # remove the legend from the plot
+      parentLogo_meth <- parentLogo_meth + theme(legend.position = "none")
+    } else {
+      parentLogo_meth <- parentLogo_meth + theme(legend.position = legend)
+    }
     parent_logo <- arrangeGrob(parentLogo_meth,parentLogo_motif, nrow=2)
 
     plotLogo_list <- list()
@@ -189,6 +198,9 @@ if(scaleBarplot == TRUE & Methylation == TRUE){
     }
 
     parentLogo_list[[parentLogo_position]] <- parent_logo
+    if (is.character(legend) && legend == "below") {
+      parentLogo_list[[parentLogo_position+1]] <- legend_plot
+    }
 
     parentLogo_Plot <- do.call("arrangeGrob", c(parentLogo_list, ncol=1))
 

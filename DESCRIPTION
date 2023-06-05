@@ -1,9 +1,12 @@
 Package: forkedTF
 Type: Package
 Title: Creation of Forked-Position Weight Matrices, a graph model of multiple PWMs.
-Version: 0.2.0
+Version: 1.2.0
 Author: c(person("Roberto Tirado",  email = "roberto@u.nus.edu", role = c("cre","aut")),
-          person("Walter Santana",  email = "wsantana@lcg.unam.mx", role = c("aut")))
+          person("Aida Ghayour-Khiavi",  email = "aghayourkhia@mun.ca", role = c("aut")),
+          person("Matthew Dyer",  email = "mjd443@mun.ca", role = c("aut")),
+          person("Walter Santana",  email = "wsantana@lcg.unam.mx", role = c("aut")),
+          person("Touati Benoukraf",  email = "tbenoukraf@mun.ca", role = c("aut")))
 Depends: R (>= 3.6.0), methods
 Imports: graphics,
          grDevices,
@@ -14,8 +17,7 @@ Imports: graphics,
          ggseqlogo (>= 0.1),
          cowplot (>= 1.0.0),
          grid (>= 3.6.1)
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: Current position weight matrices and sequence logos are not adequate to model transcription factor binding sites that are composed by a mixture of homodimer and heterodimer complexes. We introduce forkedTF, an R-library that combined functions to design Forked-Position Weight Matrices (FPWM) and Forked-Sequence Logos to better portray TF dimers. forkedTF uses and produces standard objects facilitating the exportation of FPWM to third-party software.
 License: GPL-3.0
 Encoding: UTF-8
 LazyData: true

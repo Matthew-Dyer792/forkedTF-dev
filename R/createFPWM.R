@@ -78,6 +78,8 @@ createFPWM <- function( mainTF = NULL,
       for( i in 1:length(peak_id_y_list) ){
         Motif[1,i][[1]]@MethMotif_x@MMBetaScore <- Motif[1,i][[1]]@MethMotif_x@MMBetaScore[,motif_length:1] # reverse meth info
         colnames(Motif[1,i][[1]]@MethMotif_x@MMBetaScore) <- rev(colnames(Motif[1,i][[1]]@MethMotif_x@MMBetaScore)) # reverse meth info colnames
+        Motif[1,i][[1]]@MethMotif_x@MMBetaScore[,1:(motif_length-1)] <- Motif[1,i][[1]]@MethMotif_x@MMBetaScore[,2:motif_length] # shift the methyation to land on the reverse Cs
+        Motif[1,i][[1]]@MethMotif_x@MMBetaScore[,motif_length] <- 0 # pad the last row as we don't know the methylation info
         Motif[1,i][[1]]@MethMotif_x@MMmotif@motif_matrix <- Motif[1,i][[1]]@MethMotif_x@MMmotif@motif_matrix[motif_length:1,] # reverse
         tmp_matrix <- Motif[1,i][[1]]@MethMotif_x@MMmotif@motif_matrix
         tmp_matrix[,'A'] <- Motif[1,i][[1]]@MethMotif_x@MMmotif@motif_matrix[,'T'] # complementary

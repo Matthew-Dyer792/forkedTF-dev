@@ -3,7 +3,7 @@
 </p> 
 
 ### forkedTF
-forkedTF is an R-library that generates Forked-PMW (FPMW) and Forked-Sequence Logos (F-Logos) for a better depiction of the sequence affinity (DNA sequence and DNA methylation level) of a TF of interest together with those of a segregated list of partners. Indeed, in contrast to current methods that aggregate binding sites of dimer TFs into a single PWM/logo, FPWM and F-Logo represent dimer partner PWM and sequence logos as forked from the main TF motif. Consequently, forkedTF improves PWM models of TF dimers, thereby enhancing our understanding of TF cooperativity, and opens a novel avenue for accurate TFBS prediction.
+ForkedTF is an R-library that introduces Forked-PMW (FPMW) and Forked-Sequence Logos (F-Logos) to provide a more comprehensive depiction of the sequence affinity of a TF of interest, including its DNA sequence and DNA methylation level, along with a segregated list of partner TFs. Unlike existing methods that combine binding sites of dimer TFs into a single PWM/logo, FPWM and F-Logo represent the PWM and sequence logos of dimer partners as "forked" from the main TF motif. This unique approach employed by forkedTF enhances the accuracy of PWM models for TF dimers, enriching our understanding of TF cooperativity, and opening up new possibilities for precise TFBS prediction.
  
 ### Current version: 1.2.0
 ### Installation
@@ -23,7 +23,7 @@ devtools::install_github("https://github.com/benoukraflab/forkedTF")
    - [grid](https://www.rdocumentation.org/packages/grid/versions/3.6.1) (>= 3.6.1)
 
 ## Documentation
-A detailed description of all forkedTF's features is available [here](http://benoukraf-lab.com/vignettes/vignette-FPWM.html).
+A detailed description of all forkedTF's features is available [here](https://github.com/benoukraflab/forkedTF/wiki).
 
 ## Quick usage
 #### MiniCofactor Report
@@ -77,7 +77,7 @@ write.FPWM(FPWM = fpwm, format = "FPWMtransfac", fileName = "FPWM.FPWMtransfac" 
 ## Cite
 A manuscript describing forkedTF has been submitted. If you are currently using forkedTF, please cite us as follows: 
 
-Tirado-Magallanes R, Santana-Garcia W, Ghayour-Khiavi A, Lin QXX, Usefi H, Jha S, Thomas-Chollier M, Thieffry D, Benoukraf T.
+Tirado-Magallanes R, Ghayour-Khiavi A, Santana-Garcia W, Dyer M, Lin QXX, Usefi H, Jha S, Thomas-Chollier M, Thieffry D, Benoukraf T.
 *Representing Transcription Factor Dimer Binding Sites Using Forked-Position Weight Matrices and Forked-Sequence Logos*.
 version: 0.1.0, 2020, [website: https://github.com/benoukraflab/forkedTF]
 

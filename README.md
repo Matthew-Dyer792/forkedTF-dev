@@ -30,19 +30,19 @@ A detailed description of all forkedTF's features is available [here](https://gi
 This function helps in the exploration of binding partners in a cell line. Input the `mainTF`, `cell` line of interest and the `cobinding_threshold` to generate a PDF report of the binding partners.
 
 ```r
-library("forkedTF")
-miniCofactorReport(TF = "JUND",cell = "HepG2")
+library(forkedTF)
+miniCofactorReport( TF = "CEBPB", cell = "K562" )
 ```
 <div align="center">
 <a name="miniCofactorReport"/>
-<img src="./inst/MM1_HSA_HepG2_JUND_cofactor_minireport-1.png" alt="miniCofactorReport" width="420" height="690" ></img>
+<img src="./inst/MM1_HSA_K562_CEBPB_cofactor_minireport.png" alt="miniCofactorReport" width="420" height="690" ></img>
 </a>
 </div>
 
 In addition to finding the factor with the highest peak overlap, using the parameter `filterBy="q.significance"` we can compute a -log10(Adjusted P-value) from an enrichment test as implemented in https://github.com/remap-cisreg/ReMapEnrich
 ```r
 library("forkedTF")
-miniCofactorReport(TF = "JUND",cell = "HepG2", filterBy="q.significance"
+miniCofactorReport(TF = "CEBPB",cell = "K562", filterBy="q.significance"
 ```
 <div align="center">
 <a name="miniCofactorReport"/>

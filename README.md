@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="/inst/logo-forkedTF.png" width="200" align='center'>
+  <img src="/inst/logo-forkedTF.png" width="200" align='left'>
 </p> 
 
 ### forkedTF

@@ -41,8 +41,7 @@ miniCofactorReport( TF = "CEBPB", cell = "K562" )
 
 In addition to finding the factor with the highest peak overlap, using the parameter `filterBy="q.significance"` we can compute a -log10(Adjusted P-value) from an enrichment test as implemented in https://github.com/remap-cisreg/ReMapEnrich
 ```r
-library("forkedTF")
-miniCofactorReport(TF = "CEBPB",cell = "K562", filterBy="q.significance"
+miniCofactorReport(TF = "CEBPB",cell = "K562", filterBy="q.significance")
 ```
 <div align="center">
 <a name="miniCofactorReport"/>

@@ -45,7 +45,7 @@ miniCofactorReport(TF = "CEBPB",cell = "K562", filterBy="q.significance")
 ```
 <div align="center">
 <a name="miniCofactorReport"/>
-<img src="./inst/test_qsignificance-1.png" alt="miniCofactorReport" width="420" height="690" ></img>
+<img src="./inst/MM1_HSA_K562_CEBPB_cofactor_minireport-sig.png" alt="miniCofactorReport" width="420" height="690" ></img>
 </a>
 </div>
 

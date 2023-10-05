@@ -405,10 +405,10 @@ miniCofactorReport <- function(TF,
   #if( filterBy != "fraction"){
     if( filterBy == "p.value" || filterBy == "e.value" || filterBy == "q.value" ){
       enrichment_df <- enrichment_df %>%
-        arrange( !!rlang::sym(filterBy) )
+        dplyr::arrange( !!rlang::sym(filterBy) )
     } else {
       enrichment_df <- enrichment_df %>%
-        arrange( desc( !!rlang::sym(filterBy) ) )
+        dplyr::arrange( desc( !!rlang::sym(filterBy) ) )
     }
     # Get the top co-binding partners
     top_tf            <- enrichment_df  %>% head(NumberofTop)

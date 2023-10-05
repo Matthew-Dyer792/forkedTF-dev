@@ -8,7 +8,8 @@ Author: c(person("Roberto Tirado",  email = "roberto@u.nus.edu", role = c("cre",
           person("Walter Santana",  email = "wsantana@lcg.unam.mx", role = c("aut")),
           person("Touati Benoukraf",  email = "tbenoukraf@mun.ca", role = c("aut")))
 Depends: R (>= 3.6.0), methods
-Imports: dplyr,
+Imports: magrittr,
+         dplyr,
          graphics,
          grDevices,
          TFregulomeR (>= 1.2.0),

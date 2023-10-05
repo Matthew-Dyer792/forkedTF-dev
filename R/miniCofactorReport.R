@@ -352,7 +352,7 @@ miniCofactorReport <- function(TF,
   cell_catalog <- list()
   for ( i in seq(1, dim(cell_TFBS)[1]) ) {
     # Retrieve name for the list element
-    tf_name <- cell_TFBS %>% dplyr::slice(i) %>% pull("TF")
+    tf_name <- cell_TFBS %>% dplyr::slice(i) %>% dplyr::pull("TF")
     # Fetch peaks in DB and coverto to GRanges
     cell_catalog[[ tf_name ]] <- TFregulomeR::loadPeaks(id = dplyr::slice(cell_TFBS,i) %>% dplyr::pull("ID"),
                                                         includeMotifOnly = includeMotifOnly, server = server, local_db_path = local_db_path) %>%

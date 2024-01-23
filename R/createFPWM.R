@@ -50,6 +50,11 @@ createFPWM <- function(mainTF = NULL,
     stop("scaleFrequencyCounts only works for count matrices, disable probabilityMatrix.")
   }
 
+  # build api_object
+  api_object <- TFregulomeR::.construct_api(
+    local_db_path = local_db_path
+  )
+
   if (tfnames) {
     xTF_cell_tissue_name <- suppressMessages(
       TFregulomeR::dataBrowser(
@@ -61,7 +66,7 @@ createFPWM <- function(mainTF = NULL,
 
     partners <- as.list(unlist(partners))
     MMpartners <- partners
-    for(i in 1:length(partners)) {
+    for (i in seq_along(partners)) {
       suppressMessages(
         MMpartners[[i]] <- TFregulomeR::dataBrowser(
           tf = partners[[i]],
@@ -87,10 +92,6 @@ createFPWM <- function(mainTF = NULL,
     peak_id_x <- xTF_cell_tissue_name
   }
 
-  # call API helper function
-  TFregulome_url <- TFregulomeR::construct_API_url()
-  # helper function to check SQLite database
-  TFregulomeR::check_db_file(local_db_path)
   # convert probabilityMatrix to motif_type
   if (probabilityMatrix == TRUE) {
     motif_type <- "MEME"
@@ -148,11 +149,11 @@ createFPWM <- function(mainTF = NULL,
   TFregulomeDatanPeaks <- vector()
   TFregulomeDatanSites <- vector()
 
-  for (i in 1:length(peak_id_y_list)) {
-    y <- Motif[1,i]
-    TFregulomeDataovlaplist[[i]] = y[[1]]@overlap_percentage_x
-    TFregulomeDataBetalist[[i]] = y[[1]]@MethMotif_x@MMBetaScore
-    TFregulomeDatamatrixlist[[i]] = y[[1]]@MethMotif_x@MMmotif@motif_matrix
+  for (i in seq_along(peak_id_y_list)) {
+    y <- Motif[1, i]
+    TFregulomeDataovlaplist[[i]] <- y[[1]]@overlap_percentage_x
+    TFregulomeDataBetalist[[i]] <- y[[1]]@MethMotif_x@MMBetaScore
+    TFregulomeDatamatrixlist[[i]] <- y[[1]]@MethMotif_x@MMmotif@motif_matrix
     TFregulomeDatanPeaks[i] <- y[[1]]@MethMotif_x@MMmotif@nPeaks
     TFregulomeDatanSites[i] <- y[[1]]@MethMotif_x@MMmotif@nsites
   }
@@ -166,12 +167,14 @@ createFPWM <- function(mainTF = NULL,
                              betalevel = TFregulomeDataBetalist,
                              score = TFregulomeDataovlaplist,
                              forkPosition = forkPosition)
-  FPWM <- MatrixAdder(FPWM,  forkPosition, motif_type, flipMatrix,
-                      TFregulome_url, local_db_path)
+  FPWM <- MatrixAdder(
+    FPWM,  forkPosition, motif_type, flipMatrix, api_object
+  )
   FPWM <- BetaAdder(FPWM, forkPosition)
   FPWM <- ConvertToFTRANSFAC(FPWM, probabilityMatrix, scaleFrequencyCounts)
 
-  for (i in c(1:length(FPWM@betalevel))) {
+  # for (i in c(1:length(FPWM@betalevel))) {
+  for (i in seq_along(FPWM@betalevel)) {
     X <- FPWM@betalevel[[i]]
     FPWM@betalevel[[i]] <- X[, (forkPosition + 1):ncol(FPWM@betalevel[[i]])]
   }
@@ -208,13 +211,12 @@ createFPWM <- function(mainTF = NULL,
   return(FPWM)
 }
 
-get_peaks <- function(mm_id, local_db_path) {
+get_peaks <- function(mm_id, api_object) {
   peak_i <- suppressMessages(
-    TFregulomeR::loadPeaks(
+    TFregulomeR:::.loadPeaks(
       id = mm_id,
       includeMotifOnly = TRUE,
-      # TFregulome_url = gsub("api/table_query/", "", TFregulome_url),
-      local_db_path = local_db_path))
+      api_object = api_object))
 
   return(peak_i)
 }
@@ -236,11 +238,11 @@ subset_peaks <- function(bed_y, bed_x) {
 }
 
 
-MatrixAdder <- function(fpwmObject, forkPosition, motif_type, flipMatrix,
-                        TFregulome_url, local_db_path) {
+MatrixAdder <- function(fpwmObject, forkPosition, motif_type,
+                        flipMatrix, api_object) {
   # get the peaks for the provided TFs
-  peak_x <- get_peaks(fpwmObject@xid, local_db_path)
-  peaks_y <- lapply(fpwmObject@id, get_peaks, local_db_path = local_db_path)
+  peak_x <- get_peaks(fpwmObject@xid, api_object)
+  peaks_y <- lapply(fpwmObject@id, get_peaks, api_object = api_object)
 
   # convert peaks to granges
   bed_x <- create_grange(peak_x)
@@ -252,26 +254,22 @@ MatrixAdder <- function(fpwmObject, forkPosition, motif_type, flipMatrix,
   # merge the granges
   bedx_with_bedy <- do.call(c, overlapped_beds)
 
-  if (!is.null(local_db_path)) {
-    # make a request to the local database
-    request_content_df <- TFregulomeR::query_local_database(
-      local_db_path,
-      id = fpwmObject@xid)
+  if (!is(api_object, "API") && !validObject(api_object)) {
+    stop("Invalid API object!")
   } else {
-    # make a json request to the API
-    request_content_json <- TFregulomeR::API_request(
-      TFregulome_url,
-      id = fpwmObject@xid)
-    request_content_df <- as.data.frame(request_content_json$TFBS_records)
+    # make the request
+    request_content_df <- apiRequest(api_object, id = fpwmObject@xid)
   }
 
   if (!is.null(request_content_df)) {
-    motif_seq_path_x <- request_content_df[1,c("TFBS")]
+    motif_seq_path_x <- request_content_df[1, c("TFBS")]
     motif_seq_x <- read.delim(motif_seq_path_x, sep = "\t", header = FALSE)
   }
 
   #compute motif matrix
-  colnames(motif_seq_x) <- c("chr","start","end","strand","weight", "pvalue","qvalue","sequence")
+  colnames(motif_seq_x) <- c(
+    "chr", "start", "end", "strand", "weight", "pvalue", "qvalue", "sequence"
+  )
   motif_seq_x$id <- paste0(fpwmObject@xid,"_motif_sequence_", as.vector(rownames(motif_seq_x)))
   motif_seq_x_grange <- GenomicRanges::GRanges(
     motif_seq_x$chr,
@@ -280,7 +278,8 @@ MatrixAdder <- function(fpwmObject, forkPosition, motif_type, flipMatrix,
       motif_seq_x$end),
     id = motif_seq_x$id,
     pvalue = motif_seq_x$pvalue,
-    sequence = motif_seq_x$sequence)
+    sequence = motif_seq_x$sequence
+  )
 
   # extract the highest pvalue sequence from each peak
   overlaps <- GenomicRanges::findOverlaps(
@@ -311,11 +310,10 @@ MatrixAdder <- function(fpwmObject, forkPosition, motif_type, flipMatrix,
   return(fpwmObject)
 }
 
-BetaAdder <- function( fpwmObject, forkPosition)
-{
-  S <- fpwmObject@betalevel[[1]][,1:forkPosition]
-  for ( i in 2:length(fpwmObject@id) ) {
-      S <- S + fpwmObject@betalevel[[i]][,1:forkPosition]
+BetaAdder <- function( fpwmObject, forkPosition) {
+  S <- fpwmObject@betalevel[[1]][, 1:forkPosition]
+  for (i in 2:length(fpwmObject@id)) {
+      S <- S + fpwmObject@betalevel[[i]][, 1:forkPosition]
       }
   fpwmObject@parentbeta <- S
   return(fpwmObject)

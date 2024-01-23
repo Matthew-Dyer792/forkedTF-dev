@@ -7,14 +7,13 @@ FPWMClassObj <- setClass(
     id = "list",
     nSites = "vector",
     nPeaks = "vector",
-    matrix="list",
+    matrix = "list",
     betalevel = "list",
-    score= "list",
+    score = "list",
     forkPosition = "numeric",
     parentmatrix = "matrix",
     parentbeta = "matrix",
     forked = "data.frame"
-    
   ),
   # Set the default values for the slots.
   prototype = list(
@@ -22,9 +21,9 @@ FPWMClassObj <- setClass(
     id = list(),
     nSites = vector(),
     nPeaks = vector(),
-    matrix=list(),
+    matrix = list(),
     betalevel = list(),
-    score= list(),
+    score = list(),
     forkPosition = 5,
     forked = data.frame(),
     parentbeta = matrix(),

@@ -31,7 +31,7 @@ This function helps in the exploration of binding partners in a cell line. Input
 
 ```r
 library(forkedTF)
-miniCofactorReport( TF = "CEBPB", cell = "K562" )
+miniCofactorReport(TF = "CEBPB", cell = "K562")
 ```
 <div align="center">
 <a name="miniCofactorReport"/>
@@ -41,7 +41,7 @@ miniCofactorReport( TF = "CEBPB", cell = "K562" )
 
 In addition to finding the factor with the highest peak overlap, using the parameter `filterBy="q.significance"` we can compute a -log10(Adjusted P-value) from an enrichment test as implemented in https://github.com/remap-cisreg/ReMapEnrich
 ```r
-miniCofactorReport(TF = "CEBPB",cell = "K562", filterBy="q.significance")
+miniCofactorReport(TF = "CEBPB", cell = "K562", filterBy="q.significance")
 ```
 <div align="center">
 <a name="miniCofactorReport"/>
@@ -53,10 +53,10 @@ miniCofactorReport(TF = "CEBPB",cell = "K562", filterBy="q.significance")
 Use the `createFPWM` function to extract the motif, from empirical datasets, that a TF uses when binding with a partner TF. `plotFPWM` helps in visualizing the FPWM.
 ```r
 fpwm <- createFPWM(mainTF ="CEBPB",
-                        partners = c("ATF4","ATF7","ATF3","JUND","FOS","CEBPD"),
-                        cell = "K562", 
-                        forkPosition = 5,
-                        flipMatrix = FALSE)
+                   partners = c("ATF4","ATF7","ATF3","JUND","FOS","CEBPD"),
+                   cell = "K562", 
+                   forkPosition = 5,
+                   flipMatrix = FALSE)
 
 plotFPWM(fpwm,pdfName="fpwm_plot.pdf")
 ```

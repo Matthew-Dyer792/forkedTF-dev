@@ -13,7 +13,8 @@ createFPWM(
   forkPosition = NULL,
   probabilityMatrix = FALSE,
   scaleFrequencyCounts = FALSE,
-  flipMatrix = FALSE
+  flipMatrix = FALSE,
+  local_db_path = NULL
 )
 }
 \arguments{
@@ -34,6 +35,10 @@ createFPWM(
 \item{scaleFrequencyCounts}{[logical] whether the count matrix should have equal rowSums across all the rows (Default FALSE).}
 
 \item{flipMatrix}{[logical] whether to apply reverse complement in case the core motif is after the forkPosition (Default FALSE).}
+
+\item{local_db_path}{[character] The complete path to the SQLite
+implementation of TFregulomeR database available at
+"https://methmotif.org/API_TFregulomeR/downloads/"}
 }
 \value{
 returns a FPWM class object that can be used to plot or write in transfact format.

@@ -22,7 +22,8 @@ miniCofactorReport(
   byChrom = FALSE,
   included = 1,
   pdfName = NULL,
-  server = "sg"
+  server = "ca",
+  local_db_path = NULL
 )
 }
 \arguments{
@@ -53,7 +54,7 @@ for occuring outside of it.}
 
 \item{tail}{If "lower" then, probabilities are P[X > x],
 if "higher", P[X <= x], if "both" then higher or lower is selected
-depending on the number of overlaps vs the theorical mean.}
+depending on the number of overlaps vs the theoretical mean.}
 
 \item{pAdjust}{The method that will be used for correcting the p-values.
 BH, BY and bonferroni are available.}
@@ -69,8 +70,12 @@ be outside of the universe.}
 
 \item{pdfName}{[character] Name of the pdf to be saved.}
 
-\item{server}{[character] server localtion to be linked, either 'sg' or 'ca'.
+\item{server}{[character] server location to be linked, either 'sg' or 'ca'.
 for 'Singapore' or 'Canada', respectively.}
+
+\item{local_db_path}{[character] The complete path to the SQLite
+implementation of TFregulomeR database available at
+"https://methmotif.org/API_TFregulomeR/downloads/"}
 }
 \value{
 A PDF file with the cofactorReport.
@@ -79,6 +84,6 @@ A PDF file with the cofactorReport.
 This function allows you to get a PDF report of top cofactors along with DNA methylation information for a motif of a TF.
 }
 \examples{
-miniCofactorReport(TF = "CEBPB",cell = "K562")
+miniCofactorReport(TF = "CEBPB", cell = "K562")
 }
 \keyword{cofactorReport}

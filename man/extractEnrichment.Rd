@@ -8,7 +8,7 @@ extractEnrichment(
   categories,
   tail,
   categoriesOverlaps,
-  theoricalMeans,
+  theoreticalMeans,
   categoriesCount,
   pAdjust = "BH"
 )
@@ -20,7 +20,7 @@ depending on the number of overlaps vs the theorical mean.}
 
 \item{categoriesOverlaps}{The number of overlaps for each category.}
 
-\item{theoricalMeans}{The mean number of overlaps for each category.}
+\item{theoreticalMeans}{The mean number of overlaps for each category.}
 
 \item{categoriesCount}{A vector representing the number of time a category
 is found in the catalog.}

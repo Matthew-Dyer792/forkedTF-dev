@@ -14,9 +14,11 @@
 #' @export
 loadChromFile <- function(genome) {
   # error in calling "inst/extdata"
-  file <- system.file("extdata", paste(genome, ".genome", sep = ""),
-                      package = "forkedTF")
-  if(file == "")
+  file <- system.file(
+    "extdata", paste(genome, ".genome", sep = ""), package = "forkedTF"
+  )
+  if (file == "") {
     stop("No chromosome sizes found for ", genome)
+  }
   return(file)
 }

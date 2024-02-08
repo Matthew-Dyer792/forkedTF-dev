@@ -16,7 +16,3 @@ loadChromSizes <- function(genome) {
   chromFile <- loadChromFile(genome)
   return(importChromSizes(chromFile))
 }
-
-
-
-

@@ -26,12 +26,20 @@
 #'
 #' @export
 
-shuffle <- function(regions, chromSizes = loadChromSizes("hg38"), universe = NULL,
-                    included = 1, byChrom = FALSE, ...) {
+shuffle <- function(
+    regions,
+    chromSizes = loadChromSizes("hg38"),
+    universe = NULL,
+    included = 1,
+    byChrom = FALSE,
+    ...) {
   if (is.null(universe)) {
-    universe <- GenomicRanges::GRanges(rownames(chromSizes),
-                                       IRanges::IRanges(start = 0,
-                                                        width = as.vector(chromSizes[,1]))
+    universe <- GenomicRanges::GRanges(
+      rownames(chromSizes),
+      IRanges::IRanges(
+        start = 0,
+        width = as.vector(chromSizes[, 1])
+      )
     )
   }
   universe <- GenomicRanges::reduce(universe)
@@ -66,7 +74,7 @@ shuffleUniverse <- function(regions, chromSizes, universe, included) {
   # Sorting the universe in order to pick only the universe regions that are large enough for the regions.
   universe <- universe[order(universe@ranges@width, decreasing = TRUE)]
   # The query widths are shortened by the included parameter.
-  queryWidths <- regions@ranges@width - (regions@ranges@width * (1-included))
+  queryWidths <- regions@ranges@width - (regions@ranges@width * (1 - included))
   # The regions and the universe is trimmed conditionally.
   overUniverse <- universe[universe@ranges@width >= min(queryWidths)]
   overUniverseLength <- length(universe) - length(overUniverse)
@@ -85,18 +93,23 @@ shuffleUniverse <- function(regions, chromSizes, universe, included) {
   if (length(regions) <= 0) {
     stop("All regions are longer than the longest universe regions.")
   }
-  queryWidths <- regions@ranges@width - (regions@ranges@width * (1-included))
+  queryWidths <- regions@ranges@width - (regions@ranges@width * (1 - included))
   universeWidths <- universe@ranges@width
   # The cumulative lengths are calculated to be picked randomly.
   cumLengths <- cumsum(as.numeric(universe@ranges@width))
-  # The max indexes represent the first index at which a universe region is large enough for the query.
-  maxIndexes <- unlist(lapply(queryWidths, function(queryWidth){return(which.max(universeWidths < queryWidth) - 1)}))
-  maxIndexes[maxIndexes <= 0] = length(universe)
+  # The max indexes represent the first index at which a universe region
+  # is large enough for the query.
+  maxIndexes <- unlist(lapply(queryWidths, function(queryWidth) {
+    return(which.max(universeWidths < queryWidth) - 1)
+  }))
+  maxIndexes[maxIndexes <= 0] <- length(universe)
   # A random integer is sampled from the maximum cumulative length.
   maxCumLength <- cumLengths[maxIndexes]
   randomsInCum <- unlist(lapply(maxCumLength, sample, size = 1))
   # The universe regions is retrieved from the previous random sample.
-  randomIndexes <-unlist(lapply(randomsInCum, function(randomInCum){return(which.max(cumLengths > randomInCum))}))
+  randomIndexes <- unlist(lapply(randomsInCum, function(randomInCum) {
+    return(which.max(cumLengths > randomInCum))
+  }))
   sampledRegions <- universe[randomIndexes]
   sampledWidth <- sampledRegions@ranges@width
   # The minimum starts are shortened by the included parameter.
@@ -110,7 +123,7 @@ shuffleUniverse <- function(regions, chromSizes, universe, included) {
   randomValues <- randomValues - minStarts
   # The random values are rounded to become random starts positions.
   randomStarts <- round(randomValues)
-  starts <-sampledRegions@ranges@start + randomStarts
+  starts <- sampledRegions@ranges@start + randomStarts
   # The starts and ends of each shuffled regions are corrected if they fell outside of the chromosome.
   starts[starts < 0] <- 0
   ends <- starts + queryWidths
@@ -122,9 +135,11 @@ shuffleUniverse <- function(regions, chromSizes, universe, included) {
     warning("Some query regions are longer than the chromosome they fell in. They will be shortened.")
     starts[starts < 0] <- 0
   }
-  shuffles <- GenomicRanges::GRanges(sampledRegions@seqnames,
-                                     IRanges::IRanges(start = starts,
-                                                      width = queryWidths),
-                                     strand = sampledRegions@strand)
+  shuffles <- GenomicRanges::GRanges(
+    sampledRegions@seqnames,
+    IRanges::IRanges(start = starts,
+                     width = queryWidths),
+    strand = sampledRegions@strand
+  )
   return(shuffles)
 }

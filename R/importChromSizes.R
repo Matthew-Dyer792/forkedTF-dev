@@ -14,8 +14,14 @@
 #'
 #' @export
 importChromSizes <- function(filePath) {
-  chromSizes <- utils::read.table(filePath, header = FALSE, sep = "\t",
-                                  stringsAsFactors = FALSE, quote = "", row.names = 1)
-  colnames(chromSizes) = "size"
+  chromSizes <- utils::read.table(
+    filePath,
+    header = FALSE,
+    sep = "\t",
+    stringsAsFactors = FALSE,
+    quote = "",
+    row.names = 1
+  )
+  colnames(chromSizes) <- "size"
   return(chromSizes)
 }

@@ -224,7 +224,9 @@ get_peaks <- function(mm_id, api_object) {
 create_grange <- function(peak_i) {
   bed_i <- GenomicRanges::GRanges(
     peak_i$chr,
-    IRanges::IRanges(peak_i$start - 99, peak_i$end + 100),
+    IRanges::IRanges(
+      peak_i$start - 99,
+      peak_i$end + 100),
     id = peak_i$id)
 
   return(bed_i)
@@ -298,7 +300,7 @@ MatrixAdder <- function(fpwmObject, forkPosition, motif_type,
     motif_format = motif_type)
 
   if (nrow(motif_of_peakx_with_peaky) > 0 && flipMatrix == TRUE) {
-    motif_of_peakx_with_peaky <- motif_of_peakx_with_peaky[nrow(motif_of_peakx_with_peaky):1,] # reverse
+    motif_of_peakx_with_peaky <- motif_of_peakx_with_peaky[nrow(motif_of_peakx_with_peaky):1, ] # reverse
     colnames(motif_of_peakx_with_peaky) <- c("T", "G", "C", "A") # reverse compliment
     motif_of_peakx_with_peaky <- motif_of_peakx_with_peaky[, order(colnames(motif_of_peakx_with_peaky))] # maintain column order
   }
@@ -310,7 +312,7 @@ MatrixAdder <- function(fpwmObject, forkPosition, motif_type,
   return(fpwmObject)
 }
 
-BetaAdder <- function( fpwmObject, forkPosition) {
+BetaAdder <- function(fpwmObject, forkPosition) {
   S <- fpwmObject@betalevel[[1]][, 1:forkPosition]
   for (i in 2:length(fpwmObject@id)) {
       S <- S + fpwmObject@betalevel[[i]][, 1:forkPosition]
@@ -319,29 +321,28 @@ BetaAdder <- function( fpwmObject, forkPosition) {
   return(fpwmObject)
 }
 
-ConvertToFTRANSFAC <- function(fpwmObject, probabilityMatrix, scaleFrequencyCounts)
-{
-  Cnumber = length(fpwmObject@matrix)
-  RowNum = nrow(fpwmObject@matrix[[1]])
-  forkPosition = fpwmObject@forkPosition
+ConvertToFTRANSFAC <- function(fpwmObject, probabilityMatrix, scaleFrequencyCounts) {
+  Cnumber <- length(fpwmObject@matrix)
+  RowNum <- nrow(fpwmObject@matrix[[1]])
+  forkPosition <- fpwmObject@forkPosition
   R <- rep(c((forkPosition + 1):RowNum), times = Cnumber)
   Step <- (RowNum - forkPosition)
-  DF <- data.frame(colnames(c("PO", "A", "C", "G", "T")))
-  DF[1:forkPosition, "PO"] <- c(1:forkPosition)
-  DF[(forkPosition + 1):(length(R) + forkPosition), "PO"] <- R
-  DF[1:forkPosition, 2:5] <- fpwmObject@parentmatrix
+  df <- data.frame(colnames(c("PO", "A", "C", "G", "T")))
+  df[1:forkPosition, "PO"] <- c(1:forkPosition)
+  df[(forkPosition + 1):(length(R) + forkPosition), "PO"] <- R
+  df[1:forkPosition, 2:5] <- fpwmObject@parentmatrix
   c <- 1
 
-  for (i in seq(forkPosition + 1, dim.data.frame(x = DF)[1], Step)) {
+  for (i in seq(forkPosition + 1, dim.data.frame(x = df)[1], Step)) {
     if (scaleFrequencyCounts != TRUE) {
-      DF[i:((Step + i) - 1), 2:5] <- fpwmObject@matrix[[c]][(forkPosition + 1):RowNum, ]
+      df[i:((Step + i) - 1), 2:5] <- fpwmObject@matrix[[c]][(forkPosition + 1):RowNum, ]
     } else {
-      scale_target <- sum(DF[1, 2:5])
+      scale_target <- sum(df[1, 2:5])
       scale_current <- sum(fpwmObject@matrix[[c]][(forkPosition + 1), ])
       scale_factor <- scale_target / scale_current
       scaled_matrix <- round(fpwmObject@matrix[[c]][(forkPosition + 1):RowNum, ] * scale_factor)
       # check for errors
-      DF[i:((Step + i) - 1), 2:5] <- t(apply(scaled_matrix, 1, function(x) {
+      df[i:((Step + i) - 1), 2:5] <- t(apply(scaled_matrix, 1, function(x) {
         if (sum(x) != scale_target) {
           x[which.max(x)] <- x[which.max(x)] + (scale_target - sum(x))
         }
@@ -351,16 +352,13 @@ ConvertToFTRANSFAC <- function(fpwmObject, probabilityMatrix, scaleFrequencyCoun
     c <- c + 1
   }
 
-  fpwmObject@forked <- DF
+  fpwmObject@forked <- df
   return(fpwmObject)
 }
 
-ModifyBetaFormat <- function(fpwmObject)
-{
+ModifyBetaFormat <- function(fpwmObject) {
   BS1 <- fpwmObject@parentbeta
-  BS1 <-
-    cbind(c("beta score<10%", "beta score 10-90%", "beta score>90%"),
-          BS1)
+  BS1 <- cbind(c("beta score<10%", "beta score 10-90%", "beta score>90%"), BS1)
   BS1 <- rbind(c("position", c(1:(ncol(BS1) - 1))), BS1)
 
 
@@ -386,15 +384,11 @@ ModifyBetaFormat <- function(fpwmObject)
 
   fpwmObject@parentbeta <- M1
 
-  for (i in c(1:length(fpwmObject@betalevel))) {
+  for (i in seq_along(fpwmObject@betalevel)) {
 
     BS2 <- as.matrix(fpwmObject@betalevel[[i]])
-    BS2 <-
-      cbind(c("beta score<10%", "beta score 10-90%", "beta score>90%"),
-            BS2)
-    BS2 <- rbind(c("position", c(fpwmObject@forkPosition + 1:(ncol(
-      BS2
-    ) - 1))), BS2)
+    BS2 <- cbind(c("beta score<10%", "beta score 10-90%", "beta score>90%"), BS2)
+    BS2 <- rbind(c("position", c(fpwmObject@forkPosition + 1:(ncol(BS2) - 1))), BS2)
     M2 <- matrix(nrow = ((ncol(BS2) - 1) * 3), ncol = 3)
 
 

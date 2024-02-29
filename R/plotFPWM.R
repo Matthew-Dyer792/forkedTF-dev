@@ -149,11 +149,11 @@ plotFPWM <- function(FPWM,
   logo_method <- "bits"
 
   parentLogo_motif<- ggplot2::ggplot() +
-    ggseqlogo::geom_logo(
+    suppressWarnings(ggseqlogo::geom_logo(
       data = dna_seq,
       method = logo_method,
       seq_type = "dna"
-    ) +
+    )) +
     xlab(FPWM@xid) +
     theme(
       axis.title.y = element_blank(),
@@ -261,10 +261,10 @@ plotFPWM <- function(FPWM,
     dna_seq <- t(dna_seq)
 
     p2j <- ggplot() +
-      ggseqlogo::geom_logo(
+      suppressWarnings(ggseqlogo::geom_logo(
         data = dna_seq,
         method = logo_method,
-        seq_type = "dna") +
+        seq_type = "dna")) +
       xlab(FPWM@id[[i]]) +
       theme(
         axis.title.y = element_blank(),

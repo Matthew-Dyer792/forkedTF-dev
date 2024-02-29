@@ -235,7 +235,7 @@ create_grange <- function(peak_i) {
 subset_peaks <- function(bed_y, bed_x) {
   # subsetOverlaps may mis-think the two sets coming from different references, so suppressWarnings here
   suppressWarnings(
-    bedx_with_bedy <- GenomicRanges::subsetByOverlaps(bed_x, bed_y)
+    bedx_with_bedy <- IRanges::subsetByOverlaps(bed_x, bed_y)
   )
 
   return(bedx_with_bedy)

@@ -297,7 +297,7 @@ MatrixAdder <- function(fpwmObject, forkPosition, motif_type,
     dplyr::distinct(peak_id, .keep_all = TRUE)
 
   # transform to matrix
-  motif_of_peakx_with_peaky <- formMatrixFromSeq(
+  motif_of_peakx_with_peaky <- TFregulomeR::formMatrixFromSeq(
     input_sequence = as.vector(motif_of_peakx_with_peaky_allInfo$sequence),
     motif_format = motif_type)
 

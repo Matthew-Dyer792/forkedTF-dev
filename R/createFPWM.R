@@ -234,7 +234,9 @@ create_grange <- function(peak_i) {
 
 subset_peaks <- function(bed_y, bed_x) {
   # subsetOverlaps may mis-think the two sets coming from different references, so suppressWarnings here
-  suppressWarnings(bedx_with_bedy <- subsetByOverlaps(bed_x, bed_y))
+  suppressWarnings(
+    bedx_with_bedy <- GenomicRanges::subsetByOverlaps(bed_x, bed_y)
+  )
 
   return(bedx_with_bedy)
 }
@@ -260,7 +262,7 @@ MatrixAdder <- function(fpwmObject, forkPosition, motif_type,
     stop("Invalid API object!")
   } else {
     # make the request
-    request_content_df <- apiRequest(api_object, id = fpwmObject@xid)
+    request_content_df <- TFregulomeR::apiRequest(api_object, id = fpwmObject@xid)
   }
 
   if (!is.null(request_content_df)) {

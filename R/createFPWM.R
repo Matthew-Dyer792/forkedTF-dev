@@ -26,6 +26,7 @@ createFPWM <- function(mainTF = NULL,
                        probabilityMatrix = FALSE,
                        scaleFrequencyCounts = FALSE,
                        flipMatrix = FALSE,
+                       server = "ca",
                        local_db_path = NULL) {
   tfnames <- FALSE
   tfIDs <- FALSE
@@ -52,6 +53,7 @@ createFPWM <- function(mainTF = NULL,
 
   # build api_object
   api_object <- TFregulomeR::.construct_api(
+    server = server,
     local_db_path = local_db_path
   )
 

@@ -43,7 +43,7 @@ write.FPWM <- function(FPWM = NULL,
     ynames <- paste(unlist(FPWM@id), collapse = "_&_")
 
     if (is.null(fileName)) {
-      fileName <- paste0(FPWM@xid, "_+_", ynames, ".FPWMtransfac")
+      fileName <- paste0(FPWM@xid, "_+_", ynames, ".FPWMtf")
     }
 
     fileConn <- file(fileName)
@@ -99,7 +99,7 @@ write.FPWM <- function(FPWM = NULL,
   if (format == "transfac") {
     if (is.null(fileName)) {
       ynames <- paste(unlist(FPWM@id), collapse = "_&_")
-      fileName <- paste0(FPWM@xid, "_+_", ynames, ".transfac")
+      fileName <- paste0(FPWM@xid, "_+_", ynames, ".tf")
     }
 
     fileConn <- file(fileName)

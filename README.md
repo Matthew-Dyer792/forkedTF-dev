@@ -41,7 +41,7 @@ miniCofactorReport(TF = "CEBPB", cell = "K562")
 
 In addition to finding the factor with the highest peak overlap, using the parameter `filterBy="q.significance"` we can compute a -log10(Adjusted P-value) from an enrichment test as implemented in https://github.com/remap-cisreg/ReMapEnrich
 ```r
-miniCofactorReport(TF = "CEBPB", cell = "K562", filterBy="q.significance")
+miniCofactorReport(TF = "CEBPB", cell = "K562", filterBy = "q.significance")
 ```
 <div align="center">
 <a name="miniCofactorReport"/>
@@ -52,13 +52,13 @@ miniCofactorReport(TF = "CEBPB", cell = "K562", filterBy="q.significance")
 #### FPWM creation and plot
 Use the `createFPWM` function to extract the motif, from empirical datasets, that a TF uses when binding with a partner TF. `plotFPWM` helps in visualizing the FPWM.
 ```r
-fpwm <- createFPWM(mainTF ="CEBPB",
+fpwm <- createFPWM(mainTF = "CEBPB",
                    partners = c("ATF4","ATF7","ATF3","JUND","FOS","CEBPD"),
                    cell = "K562", 
                    forkPosition = 5,
                    flipMatrix = FALSE)
 
-plotFPWM(fpwm,pdfName="fpwm_plot.pdf")
+plotFPWM(fpwm, pdfName = "fpwm_plot.pdf")
 ```
 <div align="center">
 <a name="fpwm_plot"/>
@@ -69,8 +69,8 @@ plotFPWM(fpwm,pdfName="fpwm_plot.pdf")
 #### Writing FPWM
 Save the FPWM to a local file can be used in matrix scanning or matrix clustering in `transfact` format or `FPWMtransfact` format. `Transfact` format will have a matrix for each interacting partner in the FPWM, while `FPWMtransfact` will output a single matrix.
 ```r
-write.FPWM(FPWM = fpwm, format = "transfac", fileName = "FPWM.transfact" )
-write.FPWM(FPWM = fpwm, format = "FPWMtransfac", fileName = "FPWM.FPWMtransfac" )
+write.FPWM(FPWM = fpwm, format = "transfac", fileName = "FPWM.transfact")
+write.FPWM(FPWM = fpwm, format = "FPWMtransfac", fileName = "FPWM.FPWMtransfac")
 ```
    
 ## Cite

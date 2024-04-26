@@ -14,7 +14,7 @@
 #' implementation of TFregulomeR database available at
 #' "https://methmotif.org/API_TFregulomeR/downloads/"
 #' @examples
-#' fpwm <- createFPWM(mainTF ="CEBPB", partners = c("ATF4","ATF7","JUND","CEBPD"), cell = "K562", forkPosition = 5)
+#' fpwm <- createFPWM(mainTF = "CEBPB", partners = c("ATF4","ATF7","JUND","CEBPD"), cell = "K562", forkPosition = 5)
 #' @return returns a FPWM class object that can be used to plot or write in transfact format.
 #' @export
 createFPWM <- function(mainTF = NULL,
@@ -78,7 +78,7 @@ createFPWM <- function(mainTF = NULL,
       )
     }
 
-    if(is.null(xTF_cell_tissue_name)) {
+    if (is.null(xTF_cell_tissue_name)) {
       stop("Please check the spelling of your mainTF or cell. \nOr there might no be information for this TF-cell combination.")
     }
 
@@ -86,8 +86,13 @@ createFPWM <- function(mainTF = NULL,
       stop("More than one record for the combination of TF and cell tissue")
     }
 
-    if(sum(MMpartners %in% partners)) {
-      message(paste("The following partners were not found in combination with the cell:", unlist(partners[which(MMpartners %in% partners)])))
+    if (sum(MMpartners %in% partners)) {
+      message(
+        paste(
+          "The following partners were not found in combination with the cell:",
+          unlist(partners[which(MMpartners %in% partners)])
+        )
+      )
       stop("\n")
     }
     peak_id_y_list <- MMpartners
@@ -126,19 +131,19 @@ createFPWM <- function(mainTF = NULL,
     stop("The forkPosition is larger than the motif length.")
   }
 
-  if (flipMatrix==TRUE) {
-    for( i in 1:length(peak_id_y_list) ){
-      Motif[1,i][[1]]@MethMotif_x@MMBetaScore <- Motif[1,i][[1]]@MethMotif_x@MMBetaScore[,motif_length:1] # reverse meth info
+  if (flipMatrix == TRUE) {
+    for (i in seq_along(peak_id_y_list)) {
+      Motif[1,i][[1]]@MethMotif_x@MMBetaScore <- Motif[1,i][[1]]@MethMotif_x@MMBetaScore[, motif_length:1] # reverse meth info
       colnames(Motif[1,i][[1]]@MethMotif_x@MMBetaScore) <- rev(colnames(Motif[1,i][[1]]@MethMotif_x@MMBetaScore)) # reverse meth info colnames
       Motif[1,i][[1]]@MethMotif_x@MMBetaScore[,1:(motif_length-1)] <- Motif[1,i][[1]]@MethMotif_x@MMBetaScore[,2:motif_length] # shift the methyation to land on the reverse Cs
       Motif[1,i][[1]]@MethMotif_x@MMBetaScore[,motif_length] <- 0 # pad the last row as we don't know the methylation info
       Motif[1,i][[1]]@MethMotif_x@MMmotif@motif_matrix <- Motif[1,i][[1]]@MethMotif_x@MMmotif@motif_matrix[motif_length:1,] # reverse
-      tmp_matrix <- Motif[1,i][[1]]@MethMotif_x@MMmotif@motif_matrix
-      tmp_matrix[,'A'] <- Motif[1,i][[1]]@MethMotif_x@MMmotif@motif_matrix[,'T'] # complementary
-      tmp_matrix[,'T'] <- Motif[1,i][[1]]@MethMotif_x@MMmotif@motif_matrix[,'A'] # complementary
-      tmp_matrix[,'C'] <- Motif[1,i][[1]]@MethMotif_x@MMmotif@motif_matrix[,'G'] # complementary
-      tmp_matrix[,'G'] <- Motif[1,i][[1]]@MethMotif_x@MMmotif@motif_matrix[,'C'] # complementary
-      Motif[1,i][[1]]@MethMotif_x@MMmotif@motif_matrix <- tmp_matrix
+      tmp_matrix <- Motif[1, i][[1]]@MethMotif_x@MMmotif@motif_matrix
+      tmp_matrix[, 'A'] <- Motif[1, i][[1]]@MethMotif_x@MMmotif@motif_matrix[, 'T'] # complementary
+      tmp_matrix[, 'T'] <- Motif[1, i][[1]]@MethMotif_x@MMmotif@motif_matrix[, 'A'] # complementary
+      tmp_matrix[, 'C'] <- Motif[1, i][[1]]@MethMotif_x@MMmotif@motif_matrix[, 'G'] # complementary
+      tmp_matrix[, 'G'] <- Motif[1, i][[1]]@MethMotif_x@MMmotif@motif_matrix[, 'C'] # complementary
+      Motif[1, i][[1]]@MethMotif_x@MMmotif@motif_matrix <- tmp_matrix
 
     }
     # adjust fork position
@@ -186,9 +191,11 @@ createFPWM <- function(mainTF = NULL,
   # order object based on overlapping score
   FPWM_tmp <- FPWM
   objOrder <- order(unlist(FPWM@score), decreasing = TRUE)
-  FPWM_tmp@betalevel <- FPWM@betalevel[objOrder]
   FPWM_tmp@id <- FPWM@id[objOrder]
+  FPWM_tmp@nSites <- FPWM@nSites[objOrder]
+  FPWM_tmp@nPeaks <- FPWM@nPeaks[objOrder]
   FPWM_tmp@matrix <- FPWM@matrix[objOrder]
+  FPWM_tmp@betalevel <- FPWM@betalevel[objOrder]
   FPWM_tmp@score <- FPWM@score[objOrder]
 
   FPWMPO <- FPWM@forked$PO
@@ -319,8 +326,8 @@ MatrixAdder <- function(fpwmObject, forkPosition, motif_type,
 BetaAdder <- function(fpwmObject, forkPosition) {
   S <- fpwmObject@betalevel[[1]][, 1:forkPosition]
   for (i in 2:length(fpwmObject@id)) {
-      S <- S + fpwmObject@betalevel[[i]][, 1:forkPosition]
-      }
+    S <- S + fpwmObject@betalevel[[i]][, 1:forkPosition]
+  }
   fpwmObject@parentbeta <- S
   return(fpwmObject)
 }

@@ -109,46 +109,29 @@ write.FPWM <- function(FPWM = NULL,
     to <- max(FPWMPO)
     ix_table <- cbind(which(FPWMPO %in% from), which(FPWMPO %in% to))
 
-    transfac_vector <- c()
+    transfac_vector <- character()  # Initialize an empty character vector
 
-    for (ix in 1:length(FPWM@id)) {
-      transfac_vector <- c(
-        transfac_vector, paste0("AC ", FPWM@xid, "_+_", FPWM@id[ix]), "XX"
-      )
-      transfac_vector <- c(
-        transfac_vector, paste0("ID ", FPWM@xid,"_+_",FPWM@id[ix]), "XX"
-      )
+    for (ix in seq_along(FPWM@id)) {
+      cofactor_id <- paste0(FPWM@xid, "_+_", FPWM@id[ix])
       transfac_vector <- c(
         transfac_vector,
-        paste0("DE ", FPWM@xid,"_+_", FPWM@id[ix], " ; from MethMotif")
+        paste0("AC ", cofactor_id),
+        "XX",
+        paste0("ID ", cofactor_id),
+        "XX",
+        paste0("DE ", cofactor_id, " ; from MethMotif"),
+        paste("P0", "A", "C", "G", "T", sep = "\t"),
+        apply(FPWM@forked[1:FPWM@forkPosition, ], 1, paste, collapse = "\t"),
+        apply(
+          FPWM@forked[ix_table[ix, 1]:ix_table[ix, 2], ],
+          1, paste, collapse = "\t"
+        ),
+        c("XX", "CC program: forkedTF"),
+        paste0("CC numberOfSequences: ", FPWM@nPeaks[ix]),
+        paste0("CC numberOfOverlappingPeaks: ", FPWM@nSites[ix]),
+        paste0("CC matrixFormat: ", matrix_format),
+        c("XX", "//")
       )
-      transfac_vector <- c(
-        transfac_vector, paste("P0", "A", "C", "G", "T", sep = "\t")
-      )
-
-      for (jx in 1:as.numeric(FPWM@forkPosition)) {
-        transfac_vector <- c(
-          transfac_vector, paste(FPWM@forked[jx, ], collapse = "\t")
-        )
-      }
-
-      ppForked <- FPWM@forked[ix_table[ix, 1]:ix_table[ix, 2], ]
-      for (jx in 1:dim(ppForked)[1]) {
-        transfac_vector <- c(
-          transfac_vector, paste(ppForked[jx, ], collapse = "\t")
-        )
-      }
-
-      transfac_vector <- c(transfac_vector, c("XX","CC program: forkedTF"))
-      transfac_vector <- c(
-        transfac_vector, paste0("CC numberOfSequences: ", FPWM@nSites[ix])
-      )
-      transfac_vector <- c(
-        transfac_vector,
-        paste0("CC numberOfOverlappingPeaks: ", FPWM@nPeaks[ix])
-      )
-      transfac_vector <- c(transfac_vector, paste0("CC matrixFormat: ", matrix_format))
-      transfac_vector <- c(transfac_vector, c("XX", "//"))
     }
 
     writeLines(transfac_vector, fileConn)

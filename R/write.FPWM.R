@@ -48,46 +48,29 @@ write.FPWM <- function(FPWM = NULL,
 
     fileConn <- file(fileName)
 
-    transfac_vector <- c()
-    transfac_vector <- c(
-      transfac_vector, paste0("AC ", FPWM@xid, "_+_", ynames)
-    )
-    transfac_vector <- c(transfac_vector, "XX")
-    transfac_vector <- c(transfac_vector, paste0("parentLogo : ", FPWM@xid))
+    transfac_vector <- character()  # Initialize an empty character vector
     transfac_vector <- c(
       transfac_vector,
-      paste0("leafLogos : ", paste(unlist(FPWM@id), collapse = ","))
-    )
-    transfac_vector <- c(
-      transfac_vector,
-      paste0("overlappingScore : ", paste(unlist(FPWM@score), collapse = ","))
-    )
-    transfac_vector <- c(
-      transfac_vector,
-      paste0("numberOfSequences : ", paste(unlist(FPWM@nSites), collapse = ","))
-    )
-    transfac_vector <- c(
-      transfac_vector,
+      paste0("AC ", FPWM@xid, "_+_", ynames),
+      "XX",
+      paste0("parentLogo : ", FPWM@xid),
+      paste0("leafLogos : ", paste(unlist(FPWM@id), collapse = ",")),
+      paste0("overlappingScore : ", paste(unlist(FPWM@score), collapse = ",")),
+      paste0(
+        "numberOfSequences : ", paste(unlist(FPWM@nSites), collapse = ",")
+      ),
       paste0(
         "numberOfOverlappingPeaks : ",
         paste(unlist(FPWM@nPeaks), collapse = ",")
-      )
-    )
-    transfac_vector <- c(
-      transfac_vector, paste0("forkPosition : ", FPWM@forkPosition)
-    )
-    transfac_vector <- c(
-      transfac_vector, "XX", paste("P0", "A", "C", "G", "T", sep = "\t")
-    )
-
-    for (jx in 1:dim(FPWM@forked)[1]) {
-      transfac_vector <- c(
-        transfac_vector, paste(FPWM@forked[jx, ], collapse = "\t")
-      )
-    }
-    transfac_vector <- c(
-      transfac_vector, "XX", "CC transfacFormat: FPWMtransfac format from FPWM",
-      paste0("CC matrixFormat: ", matrix_format), "XX", "//"
+      ),
+      paste0("forkPosition : ", FPWM@forkPosition),
+      "XX",
+      paste("P0", "A", "C", "G", "T", sep = "\t"),
+      apply(FPWM@forked, 1, paste, collapse = "\t"),
+      "XX",
+      "CC transfacFormat: FPWMtransfac format from FPWM",
+      paste0("CC matrixFormat: ", matrix_format),
+      c("XX", "//")
     )
 
     writeLines(transfac_vector, fileConn)

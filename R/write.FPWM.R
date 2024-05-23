@@ -57,7 +57,7 @@ write.FPWM <- function(FPWM = NULL,
       paste0("leafLogos : ", paste(unlist(FPWM@id), collapse = ",")),
       paste0("overlappingScore : ", paste(unlist(FPWM@score), collapse = ",")),
       paste0(
-        "numberOfSequences : ", paste(unlist(FPWM@nSites), collapse = ",")
+        "numberOfBasePairs : ", paste(unlist(FPWM@nSites), collapse = ",")
       ),
       paste0(
         "numberOfOverlappingPeaks : ",
@@ -110,7 +110,7 @@ write.FPWM <- function(FPWM = NULL,
           1, paste, collapse = "\t"
         ),
         c("XX", "CC program: forkedTF"),
-        paste0("CC numberOfSequences: ", FPWM@nPeaks[ix]),
+        paste0("CC numberOfBasePairs: ", FPWM@nPeaks[ix]),
         paste0("CC numberOfOverlappingPeaks: ", FPWM@nSites[ix]),
         paste0("CC matrixFormat: ", matrix_format),
         c("XX", "//")

@@ -67,10 +67,10 @@ plotFPWM(fpwm, pdfName = "fpwm_plot.pdf")
 </div>
 
 #### Writing FPWM
-Save the FPWM to a local file can be used in matrix scanning or matrix clustering in `transfact` format or `FPWMtransfact` format. `Transfact` format will have a matrix for each interacting partner in the FPWM, while `FPWMtransfact` will output a single matrix.
+Save the FPWM to a local file can be used in matrix scanning or matrix clustering in `transfac` format or `FPWMtransfac` format. `Transfac` format will have a matrix for each interacting partner in the FPWM, while `FPWMtransfac` will output a single matrix.
 ```r
-write.FPWM(FPWM = fpwm, format = "transfac", fileName = "FPWM.transfact")
-write.FPWM(FPWM = fpwm, format = "FPWMtransfac", fileName = "FPWM.FPWMtransfac")
+write.FPWM(FPWM = fpwm, format = "transfac", fileName = "FPWM.tf")
+write.FPWM(FPWM = fpwm, format = "FPWMtransfac", fileName = "FPWM.FPWMtf")
 ```
    
 ## Cite

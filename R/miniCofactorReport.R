@@ -589,7 +589,7 @@ FPWMcofactorReport_ui <- function(intersectPeakMatrix,
   cobinding_ylabel <- as.character(intersect_matrix_heatmap_i$new_y[rev(seq(1, nrow(intersect_matrix_heatmap_i), 1))])
   cobinding_ylabel_new <- paste0(
     as.character(intersect_matrix_heatmap_i$new_x),
-    "\n+\n", cobinding_ylabel
+    "\nx\n", cobinding_ylabel
   )
 
   colors_cobinding <- colorRampPalette(c("white", "#D46A6A", "#801515", "#550000"))(11)

@@ -23,7 +23,7 @@ Imports: magrittr,
          IRanges (>= 2.14.12), 
          S4Vectors (>= 0.18.3), 
          GenomicRanges (>= 1.32.7)
-Remote: benoukraflab/TFregulomeR
+Remotes: benoukraflab/TFregulomeR
 Description: Current position weight matrices and sequence logos are not adequate to model transcription factor binding sites that are composed by a mixture of homodimer and heterodimer complexes. We introduce forkedTF, an R-library that combined functions to design Forked-Position Weight Matrices (FPWM) and Forked-Sequence Logos to better portray TF dimers. forkedTF uses and produces standard objects facilitating the exportation of FPWM to third-party software.
 License: GPL-3.0
 Encoding: UTF-8

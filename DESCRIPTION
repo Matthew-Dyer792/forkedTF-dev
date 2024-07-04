@@ -2,9 +2,9 @@ Package: forkedTF
 Type: Package
 Title: Creation of Forked-Position Weight Matrices, a graph model of multiple PWMs.
 Version: 1.2.0
-Author: c(person("Roberto Tirado",  email = "roberto@u.nus.edu", role = c("cre","aut")),
+Author: c(person("Matthew Dyer",  email = "mjd443@mun.ca", role = c("aut")),
+          person("Roberto Tirado",  email = "roberto@u.nus.edu", role = c("cre","aut")),
           person("Aida Ghayour-Khiavi",  email = "aghayourkhia@mun.ca", role = c("aut")),
-          person("Matthew Dyer",  email = "mjd443@mun.ca", role = c("aut")),
           person("Walter Santana",  email = "wsantana@lcg.unam.mx", role = c("aut")),
           person("Touati Benoukraf",  email = "tbenoukraf@mun.ca", role = c("aut")))
 Depends: R (>= 3.6.0), methods

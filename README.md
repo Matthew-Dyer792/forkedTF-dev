@@ -9,9 +9,12 @@ ForkedTF is an R-library that introduces Forked-PMW (FPMW) and Forked-Sequence L
 ### Installation
 Type the following in R console:
 ```r
-install.packages("devtools")
-library("devtools")
-devtools::install_github("https://github.com/benoukraflab/forkedTF")
+if (!require("remotes", quietly = TRUE))
+    install.packages("remotes")
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("benoukraflab/forkedTF")
 ```
 #### Dependencies
    - [TFregulomeR](https://github.com/benoukraflab/TFregulomeR) (>= 1.2)

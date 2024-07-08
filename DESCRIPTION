@@ -1,7 +1,7 @@
 Package: forkedTF
 Type: Package
 Title: Creation of Forked-Position Weight Matrices, a graph model of multiple PWMs.
-Version: 1.2.0
+Version: 1.3.0
 Author: c(person("Matthew Dyer",  email = "mjd443@mun.ca", role = c("aut")),
           person("Roberto Tirado",  email = "roberto@u.nus.edu", role = c("cre","aut")),
           person("Aida Ghayour-Khiavi",  email = "aghayourkhia@mun.ca", role = c("aut")),
@@ -13,7 +13,7 @@ Imports: magrittr,
          dplyr,
          graphics,
          grDevices,
-         TFregulomeR (>= 1.2.0),
+         TFregulomeR (>= 2.3),
          ggplot2 (>= 3.3.0),
          gridExtra (>= 2.3),
          gridGraphics (>= 0.4.1),

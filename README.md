@@ -1,11 +1,11 @@
 <p align="center">
-  <img src="/inst/logo-forkedTF.png" width="200" align='left'>
+  <img src="./inst/readme_pictures/logo-forkedTF.png" width="200" align='left'>
 </p> 
 
 ### forkedTF
 ForkedTF is an R-library that introduces Forked-PMW (FPMW) and Forked-Sequence Logos (F-Logos) to provide a more comprehensive depiction of the sequence affinity of a TF of interest, including its DNA sequence and DNA methylation level, along with a segregated list of partner TFs. Unlike existing methods that combine binding sites of dimer TFs into a single PWM/logo, FPWM and F-Logo represent the PWM and sequence logos of dimer partners as "forked" from the main TF motif. This unique approach employed by forkedTF enhances the accuracy of PWM models for TF dimers, enriching our understanding of TF cooperativity, and opening up new possibilities for precise TFBS prediction.
  
-### Current version: 1.2.0
+### Current version: 1.3.0
 ### Installation
 Type the following in R console:
 ```r
@@ -17,7 +17,7 @@ if (!require("BiocManager", quietly = TRUE))
 BiocManager::install("benoukraflab/forkedTF")
 ```
 #### Dependencies
-   - [TFregulomeR](https://github.com/benoukraflab/TFregulomeR) (>= 1.2)
+   - [TFregulomeR](https://github.com/benoukraflab/TFregulomeR) (>= 2.3)
    - [ggplot2](https://cran.r-project.org/web/packages/ggplot2/index.html) (>= 3.3.0)
    - [gridExtra](https://cran.r-project.org/web/packages/gridExtra/index.html) (>= 2.3)
    - [gridGraphics](https://cran.r-project.org/web/packages/gridGraphics/index.html) (>= 0.4.1)
@@ -38,7 +38,7 @@ miniCofactorReport(TF = "CEBPB", cell = "K562")
 ```
 <div align="center">
 <a name="miniCofactorReport"/>
-<img src="./inst/MM1_HSA_K562_CEBPB_cofactor_minireport.png" alt="miniCofactorReport" width="420" height="690" ></img>
+<img src="./inst/readme_pictures/MM1_HSA_K562_CEBPB_cofactor_minireport-ratio.png" alt="miniCofactorReport" width="420" height="690" ></img>
 </a>
 </div>
 
@@ -48,24 +48,26 @@ miniCofactorReport(TF = "CEBPB", cell = "K562", filterBy = "q.significance")
 ```
 <div align="center">
 <a name="miniCofactorReport"/>
-<img src="./inst/MM1_HSA_K562_CEBPB_cofactor_minireport-sig.png" alt="miniCofactorReport" width="420" height="690" ></img>
+<img src="./inst/readme_pictures/MM1_HSA_K562_CEBPB_cofactor_minireport-sig.png" alt="miniCofactorReport" width="420" height="690" ></img>
 </a>
 </div>
 
 #### FPWM creation and plot
 Use the `createFPWM` function to extract the motif, from empirical datasets, that a TF uses when binding with a partner TF. `plotFPWM` helps in visualizing the FPWM.
 ```r
-fpwm <- createFPWM(mainTF = "CEBPB",
-                   partners = c("ATF4","ATF7","ATF3","JUND","FOS","CEBPD"),
-                   cell = "K562", 
-                   forkPosition = 5,
-                   flipMatrix = FALSE)
+fpwm <- createFPWM(
+  mainTF = "CEBPB",
+  partners = c("ATF4", "ATF7", "ATF3", "JUND", "FOS", "CEBPD"),
+  cell = "K562", 
+  forkPosition = 5,
+  flipMatrix = FALSE
+)
 
 plotFPWM(fpwm, pdfName = "fpwm_plot.pdf")
 ```
 <div align="center">
 <a name="fpwm_plot"/>
-<img src="./inst/fpwm_plot.png" alt="fpwm_plot" width="340" height="630" ></img>
+<img src="./inst/readme_pictures/fpwm_plot.png" alt="fpwm_plot" width="340" height="630" ></img>
 </a>
 </div>
 
@@ -79,9 +81,9 @@ write.FPWM(FPWM = fpwm, format = "FPWMtransfac", fileName = "FPWM.FPWMtf")
 ## Cite
 A manuscript describing forkedTF has been submitted. If you are currently using forkedTF, please cite us as follows: 
 
-Tirado-Magallanes R, Ghayour-Khiavi A, Santana-Garcia W, Dyer M, Lin QXX, Usefi H, Jha S, Thomas-Chollier M, Thieffry D, Benoukraf T.
+Dyer M, Tirado-Magallanes R, Ghayour-Khiavi A, Lin QXX, Santana-Garcia W, Usefi H, Thomas-Chollier M, Jha S, Thieffry D, and Benoukraf T.
 *Representing Transcription Factor Dimer Binding Sites Using Forked-Position Weight Matrices and Forked-Sequence Logos*.
-version: 1.2.0, 2023, [website: https://github.com/benoukraflab/forkedTF]
+version: 1.3.0, 2024, [website: https://github.com/benoukraflab/forkedTF]
 
 ## License
 This project is licensed under GNU General Public License - see [LICENSE.txt](./LICENSE.txt) for details.
